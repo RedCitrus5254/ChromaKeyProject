@@ -35,17 +35,17 @@ namespace MyChromaKey
 
             mask = Dilate(mask, bmpData.Width, bmpData.Height); //далее избавляемся от шумов посредством эрозии и расширения
 
-            //mask = Erosion(mask, bmpData.Width, bmpData.Height);
+            mask = Erosion(mask, bmpData.Width, bmpData.Height);
 
-            //mask = Erosion(mask, bmpData.Width, bmpData.Height);
+            mask = Erosion(mask, bmpData.Width, bmpData.Height);
             mask = Dilate(mask, bmpData.Width, bmpData.Height);
 
 
-            //mask = Erosion(mask, bmpData.Width, bmpData.Height);
-            //mask = Dilate(mask, bmpData.Width, bmpData.Height);
+            mask = Erosion(mask, bmpData.Width, bmpData.Height);
+            mask = Dilate(mask, bmpData.Width, bmpData.Height);
 
 
-            //mask = Erosion(mask, bmpData.Width, bmpData.Height);
+            mask = Erosion(mask, bmpData.Width, bmpData.Height);
 
             Posterize(mask); //постеризация для удобства, так как остаются только чёрные и белые пиксели
             FloodFill(msv, mask, bmpData.Width, bmpData.Height); //заливка исходного изображения вокруг маски
@@ -53,27 +53,8 @@ namespace MyChromaKey
             System.Drawing.Imaging.BitmapData bmpDataGray = bitmapGray.LockBits(new Rectangle(0, 0, bitmapGray.Width, bitmapGray.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             System.Runtime.InteropServices.Marshal.Copy(msv, 0, bmpDataGray.Scan0, bmpDataGray.Stride * bmpDataGray.Height);
             bitmapGray.UnlockBits(bmpDataGray);
-            NotifySubscriber(bitmapGray);
+            NotifySubscriber(bitmapGray); //оповещаем presenter и передаём ему новое изображение
 
-
-            //for (int i = 0; i < msv.Length-3; i+=4)
-            //{
-            //    if ((msv[i] + msv[i+2] < 230) && (msv[i + 1] > 100) )
-            //    {
-            //        msv[i] = 0;
-            //        msv[i + 1] = 0;
-            //        msv[i + 2] = 0;
-            //       // Console.WriteLine($"{i}:{msv[i]}**{msv[i+1]}**{msv[i+2]}");
-            //    }
-            //}
-            //Bitmap bitmap1 = new Bitmap(bitmap.Width, bitmap.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            //System.Drawing.Imaging.BitmapData bmpData1 = bitmap1.LockBits(new Rectangle(0, 0, bitmap1.Width, bitmap1.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            //System.Runtime.InteropServices.Marshal.Copy(msv, 0, bmpData1.Scan0, bmpData1.Stride * bmpData1.Height);
-
-
-            //bitmap1.UnlockBits(bmpData1);
-
-            //NotifySubscriber(bitmap1);
         }
 
         private byte[] GetGrayImage(byte[] rgbaImage)
@@ -109,10 +90,10 @@ namespace MyChromaKey
                     int first = grayImageMass[iMinusOnePos + j - 1] + 2 * grayImageMass[iMinusOnePos + j] + grayImageMass[iMinusOnePos + j + 1] - grayImageMass[iPlusOnePos + j - 1] - 2 * grayImageMass[iPlusOnePos + j] - grayImageMass[iPlusOnePos + j + 1];
                     int second = grayImageMass[iMinusOnePos + j + 1] + 2 * grayImageMass[iPos + j + 1] + grayImageMass[iPlusOnePos + j + 1] - grayImageMass[iMinusOnePos + j - 1] - 2 * grayImageMass[iPos + j - 1] - grayImageMass[iPlusOnePos + j - 1];
                     mask[i * width + j] = Convert.ToByte((Math.Abs(first) + Math.Abs(second)) / 16); //делим на 8 (8*255 -- максимально возможное значение цвета; делим на 2 для уменьшения количества шумов)
-                    if (mask[i * width + j] < 5)
-                    {
-                        mask[i * width + j] = 0;
-                    }
+                    //if (mask[i * width + j] < 5)
+                    //{
+                    //    mask[i * width + j] = 0;
+                    //}
                 }
                 mask[i * width - 1] = 0;
             }
@@ -240,7 +221,7 @@ namespace MyChromaKey
         {
             for(int i = 0; i < mass.Length; i++)
             {
-                if (mass[i] >= 5)
+                if (mass[i] >= 1)
                 {
                     mass[i] = 255;
                 }
