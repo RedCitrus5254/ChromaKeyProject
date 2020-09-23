@@ -35,7 +35,7 @@ namespace MyChromaKey
 
             mask = Dilate(mask, bmpData.Width, bmpData.Height); //далее избавляемся от шумов посредством эрозии и расширения
 
-            mask = Erosion(mask, bmpData.Width, bmpData.Height);
+            //mask = Erosion(mask, bmpData.Width, bmpData.Height);
 
             mask = Erosion(mask, bmpData.Width, bmpData.Height);
             mask = Dilate(mask, bmpData.Width, bmpData.Height);
@@ -63,7 +63,7 @@ namespace MyChromaKey
             byte[] grayImage = new byte[rgbaImage.Length / 4];
             for(int i = 0, j=0; i < rgbaImage.Length; i+=4, j++)
             {
-                grayImage[j] = Convert.ToByte((rgbaImage[i] + rgbaImage[i + 1] + rgbaImage[i + 2]) / 3);
+                grayImage[j] =  rgbaImage[i + 1];
             }
             return grayImage;
         }
@@ -221,7 +221,7 @@ namespace MyChromaKey
         {
             for(int i = 0; i < mass.Length; i++)
             {
-                if (mass[i] >= 1)
+                if (mass[i] >= 3)
                 {
                     mass[i] = 255;
                 }
